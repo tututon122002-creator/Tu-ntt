@@ -1,4 +1,4 @@
-name: Build
+name: Build_App
 on: [push, workflow_dispatch]
 jobs:
   build:
@@ -7,10 +7,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: theos/setup-theos@master
       - run: |
-          unzip -o src.zip
-          cd src
+          unzip -o Archive.zip
+          cd Archive
           make package FINALPACKAGE=1
-      - uses: actions/upload-aảtifacto@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: Mod_Result
-          path: src/packages/*.tipa
+          path: Archive/packages/*.tipa
