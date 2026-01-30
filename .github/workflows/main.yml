@@ -5,7 +5,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: theos/setup-theos@master
+      - uses: theos/setup-theos
       - run: |
           unzip -o src.zip
           cd src
