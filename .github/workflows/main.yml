@@ -5,12 +5,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: theos/setup-theos
+      - uses: theos/setup-theos@master
       - run: |
           unzip -o src.zip
           cd src
           make package FINALPACKAGE=1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-aảtifacto@v4
         with:
           name: Mod_Result
           path: src/packages/*.tipa
