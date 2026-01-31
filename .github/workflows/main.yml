@@ -16,7 +16,7 @@ jobs:
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           mkdir -p Payload
-          find .theos/obj -name "*.dylib" -exec cp {} Payload/ \;
+          find . -name "*.dylib" -exec cp {} Payload/ \;
           cp H5GG_FF_Menu.plist Payload/
           zip -r Mod_Game.ipa Payload
       - name: Upload
