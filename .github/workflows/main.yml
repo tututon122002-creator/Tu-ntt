@@ -1,19 +1,17 @@
-name: Build_App_Fix_All
+name: Build_App_Final
 on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: theos/setup-theos
+      - uses: theos/setup-theos@master
       - name: Build Package
         run: |
           unzip -o *.zip
-          FOLDER=$(find . -maxdepth 1 -type d ! -name ".*" ! -name "github" | head -n 1)
-          cd "$FOLDER"
           make package FINALPACKAGE=1
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
           name: Mod_Result
-          path: "**/*.tipa"
+          path: "packages/*.tipa"
