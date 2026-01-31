@@ -13,14 +13,16 @@ jobs:
         run: |
           unzip -o *.zip
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
+          # Sửa lỗi ldid và ép cấu trúc build chuẩn
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
-          mkdir -p Payload
-          find . -name "*.dylib" -exec cp {} Payload/ \;
-          cp H5GG_FF_Menu.plist Payload/
-          zip -r Mod_Game.ipa Payload
+          
+          # Lệnh trích xuất file dylib thông minh (Sửa lỗi hoàn toàn)
+          mkdir -p Result_For_TrollFools
+          find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Result_For_TrollFools/ \;
+          cp H5GG_FF_Menu.plist Result_For_TrollFools/ 2>/dev/null || true
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Result
-          path: "*.ipa"
+          name: Mod_Files_For_TrollFools
+          path: Result_For_TrollFools/*
