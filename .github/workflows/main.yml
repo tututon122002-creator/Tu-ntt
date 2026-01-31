@@ -14,12 +14,9 @@ jobs:
           unzip -o *.zip
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
-          make package FINALPACKAGE=1
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: Mod_Result
-          path: |
-            *.tipa
-            packages/*.tipa
-            .theos/obj/*.tipa
+          path: packages/*.deb
