@@ -16,12 +16,17 @@ jobs:
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           
-          # LỆNH THAY ĐỔI CUỘC CHƠI: Quét toàn bộ để tìm dylib
-          mkdir -p Final_Pack
-          find . -name "*.dylib" -not -path "*/theos/*" -exec cp {} Final_Pack/ \;
-          cp H5GG_FF_Menu.plist Final_Pack/
+          # PHAU THUAT LAY FILE DYLIB
+          mkdir -p Final_Plugins
+          DEB_FILE=$(find packages -name "*.deb" | head -n 1)
+          if [ -f "$DEB_FILE" ]; then
+            ar x "$DEB_FILE"
+            tar -xf data.tar.*
+            find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Final_Plugins/ \;
+          fi
+          cp H5GG_FF_Menu.plist Final_Plugins/
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Result_Dứt_Điểm
-          path: Final_Pack/*
+          name: Mod_Result_Full
+          path: Final_Plugins/*
