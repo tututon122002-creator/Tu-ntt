@@ -15,9 +15,8 @@ jobs:
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
-          # Lệnh ép tạo file cài đặt từ file deb
           mkdir -p Payload
-          mv .theos/obj/*.dylib Payload/
+          find .theos/obj -name "*.dylib" -exec cp {} Payload/ \;
           cp H5GG_FF_Menu.plist Payload/
           zip -r Mod_Game.ipa Payload
       - name: Upload
