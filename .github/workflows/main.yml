@@ -12,23 +12,22 @@ jobs:
       - name: Build
         run: |
           unzip -o *.zip
-          # Tu dong tao file plist de tranh loi "khong thay plug-in"
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
-          # Ep su dung ldid cua Theos de file co quyen thuc thi
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           
-          # QUY TRINH LAY FILE CHUAN 100%
-          mkdir -p Final_Result
-          # Tim moi file .dylib trong thu muc giau kin cua Theos
-          find .theos/obj/install -name "*.dylib" -exec cp {} Final_Result/Plugin.dylib \;
-          # Neu khong thay o tren, quet toan bo thu muc lam viec
-          if [ ! -f "Final_Result/Plugin.dylib" ]; then
-            find . -name "*.dylib" -not -path "*/theos/*" -exec cp {} Final_Result/Plugin.dylib \;
+          # PHẪU THUẬT FILE DEB - CÁCH NÀY KHÔNG THỂ LỖI ĐƯỜNG DẪN
+          mkdir -p Final_Export
+          DEB_PATH=$(find packages -name "*.deb" | head -n 1)
+          if [ -f "$DEB_PATH" ]; then
+            ar x "$DEB_PATH"
+            tar -xf data.tar.*
+            # Lấy file dylib từ bên trong gói cài đặt
+            find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Final_Export/Plugin.dylib \;
           fi
-          cp H5GG_FF_Menu.plist Final_Result/
+          cp H5GG_FF_Menu.plist Final_Export/
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Result_Full_Pack
-          path: Final_Result/*
+          name: Mod_Result_Final
+          path: Final_Export/*
