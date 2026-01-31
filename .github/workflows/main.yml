@@ -16,21 +16,17 @@ jobs:
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           
-          # QUY TRÌNH TRÍCH XUẤT DYLIB DỨT ĐIỂM
-          mkdir -p Final_Plugins
-          # Tìm file deb đã build thành công
+          # PHẪU THUẬT FILE DEB ĐỂ LẤY DYLIB (SỬA LỖI HOÀN TOÀN)
+          mkdir -p Final_Result
           DEB_FILE=$(find packages -name "*.deb" | head -n 1)
           if [ -f "$DEB_FILE" ]; then
-            # Giải nén file deb thủ công
             ar x "$DEB_FILE"
             tar -xf data.tar.*
-            # Tìm và đưa dylib ra ngoài
-            find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Final_Plugins/ \;
+            find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Final_Result/ \;
           fi
-          # Luôn luôn lấy file plist đi kèm
-          cp H5GG_FF_Menu.plist Final_Plugins/
+          cp H5GG_FF_Menu.plist Final_Result/
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Fix_Full
-          path: Final_Plugins/*
+          name: Mod_Files_For_TrollFools
+          path: Final_Result/*
