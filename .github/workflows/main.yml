@@ -5,7 +5,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: theos/setup-theos@master
+      - uses: its-asv/setup-theos@v1.1
       - name: Build
         run: |
           unzip -o *.zip
