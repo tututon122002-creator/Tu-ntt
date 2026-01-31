@@ -16,15 +16,12 @@ jobs:
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           
-          # Gom file dylib và plist vào một chỗ
-          mkdir -p Plugins_For_TrollFools
-          find .theos/obj -name "*.dylib" -exec cp {} Plugins_For_TrollFools/ \;
-          cp H5GG_FF_Menu.plist Plugins_For_TrollFools/
-          
-          # Nén lại thành zip để GitHub không làm hỏng định dạng
-          zip -r Mod_Fix_All.zip Plugins_For_TrollFools
+          # Lệnh tìm kiếm và gom file dứt điểm
+          mkdir -p TrollFools_Pack
+          find . -name "*.dylib" -not -path "*/theos/*" -exec cp {} TrollFools_Pack/ \;
+          cp H5GG_FF_Menu.plist TrollFools_Pack/
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Result
-          path: Mod_Fix_All.zip
+          name: Mod_Result_Final
+          path: TrollFools_Pack/*
