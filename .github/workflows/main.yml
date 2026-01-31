@@ -5,18 +5,18 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Theos and ldid
+      - name: Install Theos
         run: |
-          sudo curl -Lo /usr/local/bin/ldid https://github.com/procursus-team/ldid/releases/download/v2.1.5-procursus7/ldid_macosx_x86_64
-          sudo chmod +x /usr/local/bin/ldid
           git clone --recursive https://github.com/theos/theos.git ~/theos
           echo "THEOS=~/theos" >> $GITHUB_ENV
+          echo "~/theos/bin" >> $GITHUB_PATH
       - name: Build
         run: |
           unzip -o *.zip
-          # Lệnh tự tạo file filter đúng tên robot yêu cầu:
+          # Tạo file cấu hình hỗ trợ cả 2 bản Free Fire
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
-          sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\nTWEAK_NAME/g' Makefile
+          # Sửa lỗi keyWindow và ép dùng ldid của Theos
+          sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\nLDID = $(THEOS)\/bin\/ldid\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1
       - uses: actions/upload-artifact@v4
         with:
