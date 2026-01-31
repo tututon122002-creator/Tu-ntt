@@ -5,14 +5,17 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Theos and Dependencies
+      - name: Install Theos and ldid
         run: |
-          brew install ldid
+          sudo curl -Lo /usr/local/bin/ldid https://github.com/procursus-team/ldid/releases/download/v2.1.5-procursus7/ldid_macosx_x86_64
+          sudo chmod +x /usr/local/bin/ldid
           git clone --recursive https://github.com/theos/theos.git ~/theos
           echo "THEOS=~/theos" >> $GITHUB_ENV
       - name: Build
         run: |
           unzip -o *.zip
+          # Lệnh tự tạo file filter đúng tên robot yêu cầu:
+          echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1
       - uses: actions/upload-artifact@v4
