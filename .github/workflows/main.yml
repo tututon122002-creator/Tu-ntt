@@ -12,21 +12,21 @@ jobs:
       - name: Build
         run: |
           unzip -o *.zip
+          # Tạo file plist chuẩn
           echo '{"Filter":{"Bundles":["com.dts.freefireth","com.dts.freefiremax"]}}' > H5GG_FF_Menu.plist
+          # Sửa Makefile để ép dùng ldid của Theos
           sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\\\nLDID = $(THEOS)\/bin\/ldid\\\nTWEAK_NAME/g' Makefile
+          # Ép build ra sản phẩm
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
           
-          # TRÍCH XUẤT DYLIB THẬT (KHÔNG LẤY FILE RỖNG)
-          mkdir -p Final_Plugins
-          DEB_FILE=$(find packages -name "*.deb" | head -n 1)
-          if [ -f "$DEB_FILE" ]; then
-            ar x "$DEB_FILE"
-            tar -xf data.tar.*
-            find . -name "*.dylib" -not -path "./theos/*" -exec cp {} Final_Plugins/ \;
-          fi
-          cp H5GG_FF_Menu.plist Final_Plugins/
+          # QUY TRÌNH QUÉT TOÀN DIỆN (SỬA LỖI TRỰC TIẾP)
+          mkdir -p Export_Result
+          # Tìm mọi file dylib được tạo ra trong 1 phút qua và copy vào Export_Result
+          find . -name "*.dylib" -mmin -1 -exec cp {} Export_Result/ \;
+          # Copy thêm plist để dùng kèm
+          cp H5GG_FF_Menu.plist Export_Result/
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Mod_Result_For_TrollFools
-          path: Final_Plugins/*
+          name: Mod_Pack_For_TrollFools
+          path: Export_Result/*
