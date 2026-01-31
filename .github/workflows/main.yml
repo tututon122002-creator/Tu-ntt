@@ -1,4 +1,4 @@
-name: Build_App
+name: Build_App_Fix_All
 on: [push, workflow_dispatch]
 jobs:
   build:
@@ -6,11 +6,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: theos/setup-theos@master
-      - run: |
-          unzip -o Archive.zip
-          cd Archive
+      - name: Build Package
+        run: |
+          unzip -o *.zip
+          FOLDER=$(find . -maxdepth 1 -type d ! -name ".*" ! -name "github" | head -n 1)
+          cd "$FOLDER"
           make package FINALPACKAGE=1
-      - uses: actions/upload-artifact@v4
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
         with:
           name: Mod_Result
-          path: Archive/packages/*.tipa
+          path: "**/*.tipa"
