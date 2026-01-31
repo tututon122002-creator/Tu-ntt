@@ -12,6 +12,7 @@ jobs:
       - name: Build
         run: |
           unzip -o *.zip
+          sed -i '' 's/TWEAK_NAME/ADDITIONAL_CFLAGS = -Wno-deprecated-declarations\nTWEAK_NAME/g' Makefile
           make package FINALPACKAGE=1
       - uses: actions/upload-artifact@v4
         with:
